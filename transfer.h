@@ -1,5 +1,5 @@
-struct transfer {
-	int source,
-	int destination,
-	int amount
-}
+typedef struct Transfer {
+	int source;
+	int destination;
+	int amount;
+} Transfer;

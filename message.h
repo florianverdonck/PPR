@@ -1,4 +1,4 @@
-struct  message {
-	int type,
-	struct* transfer
-}
+typedef struct Message {
+	int type;
+	Transfer transfer;
+} Message;
