@@ -1,5 +1,5 @@
-struct virement {
+struct transfer {
 	int source,
 	int destination,
-	int montant
+	int amount
 }

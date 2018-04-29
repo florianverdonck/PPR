@@ -1,4 +1,4 @@
 struct  message {
 	int type,
-	struct* virement
+	struct* transfer
 }
