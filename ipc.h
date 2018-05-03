@@ -29,8 +29,9 @@ int shmid;
 int* writer;
 int* reader;
 
-void iniiSharedMemory();
+void initSharedMemory();
 void initSemaphore();
+void destroy();
 void down();
 void up();
 int* getWriter();

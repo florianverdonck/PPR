@@ -17,7 +17,19 @@
 		./pdr [num_cpt_destinataire] {-}[montant]
 
 */
+#include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdint.h>
 
-int main(int argc, char* agrv[]) {
-	return 0;
+#include "operation.h"
+
+int main(int argc, char* args[]) {
+	if(argc != 3) {
+		perror("pdr account amount");
+		exit(1);
+	}
+	depositOrWithdrawal(atoi(args[1]), atoi(args[2]));
+
 }

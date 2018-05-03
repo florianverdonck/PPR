@@ -1,4 +1,5 @@
 #include "ipc.h"
+#include <stdio.h>
 
 void initSharedMemory(){
     shmid = shmget(SHM_KEY, sizeof(int)*ACCOUNT_NUM, IPC_CREAT | 0660);
@@ -26,8 +27,15 @@ void initSemaphore(){
     SYS1(semctl(semid, 0, SETVAL, sem));
     
 }
+void destroy(){
+    shmctl(shmid, IPC_RMID, NULL);
+    shmdt(writer);
+    shmdt(reader);
+}
 void down(){
+    fprintf(stdout, "Downing\n");
     SYS1(semop(semid, &sem_down, 1));
+    fprintf(stdout, "finish downing\n");
 }
 void up(){
     SYS1(semop(semid, &sem_up, 1));

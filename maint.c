@@ -31,7 +31,35 @@
 		./maint [type] [opt]
 
 */
+#include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdint.h>
 
-int main(int argc, char* agrv[]) {
-	return 0;
+#include "ipc.h"
+
+int main(int argc, char* args[]) {
+	int type = atoi(args[1]);
+	if(argc < 2) {
+		perror("maint type [opt]");
+		exit(1);
+	}
+	if(argc < 3 && type == 3) {
+		perror("maint 3 opt");
+		exit(1);
+	}
+	
+	if(type == 1){
+		initSharedMemory();
+		initSemaphore();
+	} else if(type == 2){
+		destroy();
+	} else {
+		printf("%d\n", atoi(args[2]));
+		down();
+		printf("%d\n", atoi(args[2]));
+		sleep(atoi(args[2]));
+		up();
+	}
 }
