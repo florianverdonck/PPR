@@ -117,7 +117,6 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
-
 void prompt() {
 	printf("*** CONSOLE DE VIREMENTS ***\n");
 
@@ -155,8 +154,7 @@ void prompt() {
 	close(pipe_transfer_fd[1]);
 }
 
-int get_command_params(char *command, char params[3][20])
-{
+int get_command_params(char *command, char params[3][20]) {
 	int n=0, i, j=0;
 	
 	for(i=0; 1==1; i++)
@@ -179,9 +177,9 @@ int get_command_params(char *command, char params[3][20])
 Message create_message(char type[20], char destination[20], char amount[20]) {
 	Message msg;
 
-	if (strcmp(type, "*")) {
+	if (strcmp(type, "+") == 0) {
 		msg.type = 0;
-	} else if (strcmp(type, "+")) {
+	} else if (strcmp(type, "*") == 0) {
 		msg.type = 1;
 	} else {
 		printf("L'opération n'est pas reconnue, veuillez réessayer\n");
@@ -236,21 +234,44 @@ void reccurent_transfers_child() {
 	// On ferme l'écriture sur l'autre
 	close(pipe_timer_fd[1]);
 
-	Message msg;
+	Message transferMessage;
+	Message timerMessage;
 
-	while (1==1) {
+	while (1) {
 
-		int resultRead = read(pipe_transfer_fd[0], &msg, sizeof(msg));
+		int transferMessageSize = read(pipe_transfer_fd[0], &transferMessage, sizeof(transferMessage));
 
-		if (resultRead == 0) {
-			printf("NO MSG\n");
-		} else if (resultRead == -1) {
+		if (transferMessageSize == 0) {
+			// Aucun message reçu
+		} else if (transferMessageSize == -1) {
 			// Erreur lors de la lecture
-			printf("ERRUER L\n");
 		} else {
-			printf("Recu msg sur PIPE\n");
+			write(1, "R-VIRE\n", 7);
 			// Enregistrement du virement dans le set
-			add_recurrent_transfer(&msg.transfer);
+
+			if (transferMessage.type == 1) {
+				// il s'agit d'un virement récurrent
+				add_recurrent_transfer(&transferMessage.transfer);
+			} else {
+				// le type du message n'est pas reconnu
+			}
+		}
+
+		// NE SEMBLE PAS RECEVOIR DE MESSAGE TICK ????
+		int timerMessageSize = read(pipe_timer_fd[0], &timerMessage, sizeof(timerMessage));
+
+		if (timerMessageSize == 0) {
+			write(1, "NOMESS\n", 7);
+			// Aucun message reçu
+		} else if (timerMessageSize == -1) {
+			write(1, "ERRORR\n", 7);
+			// Erreur lors de la lecture
+		} else {
+			write(1, "R-TICK\n", 7);
+			
+			if (timerMessage.type == 2) {
+				process_transfers_list();
+			}
 		}
 
 	}
@@ -265,7 +286,14 @@ void print_usage() {
 }
 
 void send_tick_signal() {
-	//
+	
+	Message msg_tick;
+	msg_tick.type = 2;
+	
+	write(1, "TICK!\n", 6);
+
+	write(pipe_timer_fd[1], &msg_tick, sizeof(msg_tick));
+
 }
 
 int add_recurrent_transfer(Transfer* toAdd) {
@@ -300,10 +328,24 @@ int add_recurrent_transfer(Transfer* toAdd) {
 	*(transfers_list + transfers_in_list) = *toAdd;
 	transfers_in_list++;
 
-	print_transfers_list();
-
 	return 1;
 
+}
+
+void print_message(Message* msg) {
+	if (msg->type == 0) {
+		printf("MESSAGE = Virement classique (%i -> %i : %i)", msg->transfer.source, msg->transfer.destination, msg->transfer.amount);
+	} else if (msg->type == 1) {
+		printf("MESSAGE = Virement récurrent (%i -> %i : %i)", msg->transfer.source, msg->transfer.destination, msg->transfer.amount);
+	} else {
+		printf("MESSAGE = Tick horloge");
+	}
+}
+
+void process_transfers_list() {
+	for (Transfer *transfer = transfers_list; transfer - transfers_list < transfers_in_list; transfer++)
+	    // ENVOI DU VIREMENT
+	    printf("Virement (%i -> %i : %i)\n", transfer->source, transfer->destination, transfer->amount);
 }
 
 void print_transfers_list() {

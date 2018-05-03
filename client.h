@@ -28,3 +28,5 @@ Message create_message(char type[20], char destination[20], char amount[20]);
 int add_recurrent_transfer(Transfer* toAdd);
 
 void print_transfers_list();
+
+void process_transfers_list();
