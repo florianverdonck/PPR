@@ -59,9 +59,9 @@ TO-DO :
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <sys/types.h>
 
-#include "transfer.h"
-#include "message.h"
+#include "config.h"
 
 #define INIT_TRANSFERS_LIST_SIZE 2
 
@@ -105,7 +105,7 @@ int transfers_list_size = 0;
 int transfers_in_list = 0;
 
 // Variables related to socket connection
-int sck, port;
+int sck;
 struct sockaddr_in addr;
 struct hostent *host;
 
@@ -135,7 +135,7 @@ int main(int argc, char* argv[]) {
 	bzero((char*)&addr,sizeof(struct sockaddr_in));
     addr.sin_family      = AF_INET;
 	bcopy(host->h_addr,(char*)&addr.sin_addr.s_addr,host->h_length);
-    addr.sin_port        = htons(port);
+    addr.sin_port        = htons(server_port);
 
     if( connect(sck, (struct sockaddr *)&addr, sizeof(addr)) < 0 )
     {   perror("client - connect");
