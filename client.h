@@ -3,6 +3,11 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <inttypes.h>
+#include <ctype.h>
+
+#include <sys/socket.h>
+#include <netinet/in.h>
 
 #include "config.h"
 
@@ -29,3 +34,5 @@ int add_recurrent_transfer(Transfer* toAdd);
 void print_transfers_list();
 
 void process_transfers_list();
+
+int is_valid_number(char str[20]);

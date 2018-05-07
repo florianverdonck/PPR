@@ -6,7 +6,7 @@ typedef struct Transfer Transfer;
 struct Transfer {
 	int source;
 	int destination;
-	int account;
+	int amount;
 };
 
 #endif
