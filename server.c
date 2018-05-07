@@ -61,23 +61,23 @@ int main() {
     fprintf(stderr,"Start listening for connections\n");
     listen(sck,1);
 
-    while( 1 )
-    {   struct sockaddr_in addr2;
+    while( 1 ){
+        struct sockaddr_in addr2;
         u_int len2 = sizeof(addr2);
         int   sck2 = accept(sck,(struct sockaddr *)&addr2,&len2);
         //fprintf(stderr,"Connection from %s %d\n",inet_ntoa(addr2.sin_addr.s_addr), ntohs(addr2.sin_port));
         fprintf(stderr,"Connection from %s %d\n",inet_ntoa(addr2.sin_addr), ntohs(addr2.sin_port));
         FILE *netFd = fdopen(sck2,"r");
-        Transfer* transfer;
+        Transfer transfer;
         size_t res;
-        while(res = fread(transfer, sizeof(*transfer), 1, netFd)){
-            fprintf(stderr,"%s",buffer);
-			if(res == sizeof(*transfer)){
-                depositOrWithdrawal(transfer->source, -(transfer->amount));
-                depositOrWithdrawal(transfer->destination, transfer->amount);
-                printf("Source: %d   Destination: %d   Amount: %d", transfer->source, transfer->destination, transfer->amount);
+        while((res = fread(&transfer, sizeof(transfer), 1, netFd)) != -1){
+            printf("Recu msg\n");
+			if(res != -1){
+                printf("Source: %d   Destination: %d   Amount: %d\n", transfer.source, transfer.destination, transfer.amount);
+                depositOrWithdrawal(transfer.source, -(transfer.amount));
+                depositOrWithdrawal(transfer.destination, transfer.amount);
 			} else {
-                fprintf(stderr,"Closing connection\n");
+                fprintf(stdout,"Closing connection\n");
 				close(sck2);
 				break;
             }

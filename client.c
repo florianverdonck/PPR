@@ -106,6 +106,7 @@ int transfers_in_list = 0;
 
 // Variables related to socket connection
 int sck;
+FILE *socket_fd;
 struct sockaddr_in addr;
 struct hostent *host;
 
@@ -142,7 +143,7 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
-    FILE *socket_fd = fdopen(sck,"w");
+    socket_fd = fdopen(sck,"w");
 	setbuf(socket_fd,NULL);
 
     if( isatty(0) )
@@ -205,9 +206,9 @@ void prompt() {
 		if (msg.type == -1) continue;
 
 		if (msg.type == 0) {
-			
-			write(socket_fd, msg.transfer, sizeof(msg.transfer));
-
+			printf("Source: %d   Destination: %d   Amount: %d\n", msg.transfer.source, msg.transfer.destination, msg.transfer.amount);
+			fwrite(&(msg.transfer), sizeof(msg.transfer), 1,socket_fd);
+			printf("Envoyé\n");
 		} else if (msg.type == 1) {
 			write(pipe_fd[1], &msg, sizeof(msg));
 		} else {
