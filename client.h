@@ -4,8 +4,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-#include "transfer.h"
-#include "message.h"
+#include "config.h"
 
 #define INIT_TRANSFERS_LIST_SIZE 2
 
