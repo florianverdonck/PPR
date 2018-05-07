@@ -37,14 +37,14 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include "ipc.h"
+#include "resource.h"
 
 int main(int argc, char* args[]) {
-	int type = atoi(args[1]);
 	if(argc < 2) {
 		perror("maint type [opt]");
 		exit(1);
 	}
+	int type = atoi(args[1]);
 	if(argc < 3 && type == 3) {
 		perror("maint 3 opt");
 		exit(1);

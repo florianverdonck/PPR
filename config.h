@@ -6,10 +6,16 @@ TYPE :	0	-> Virement classique (Symbole +)
 
 */
 
-#include "transfer.h"
+#if !defined (_CONFIG_H_)
+#define _CONFIG_H_
 
-#if !defined (_MESSAGE_H_)
-#define _MESSAGE_H_
+typedef struct Transfer Transfer;
+
+struct Transfer {
+	int source;
+	int destination;
+	int amount;
+};
 
 typedef struct Message Message;
 

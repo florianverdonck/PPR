@@ -9,8 +9,8 @@
 #define SEM_KEY 2222
 #define SYS1(call) (call == -1 ? perror("SYSCALL ERROR"), exit(5) : 0)
 
-#if !defined (_IPC_H_)
-#define _IPC_H_
+#if !defined (_RESOURCE_H_)
+#define _RESOURCE_H_
 
 union semun {
     int val;
