@@ -142,9 +142,11 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
+    FILE *socket_fd = fdopen(sck,"w");
+	setbuf(socket_fd,NULL);
+
     if( isatty(0) )
 	    fprintf(stderr,"Connected\n> ");
-
 
 	if (pipe(pipe_fd) < 0) {
 		printf("Erreur création pipe transfer\n");
@@ -203,7 +205,9 @@ void prompt() {
 		if (msg.type == -1) continue;
 
 		if (msg.type == 0) {
-			// Envoi du virement avec les params
+			
+			write(socket_fd, msg.transfer, sizeof(msg.transfer));
+
 		} else if (msg.type == 1) {
 			write(pipe_fd[1], &msg, sizeof(msg));
 		} else {
@@ -258,6 +262,14 @@ Message create_message(char type[20], char destination[20], char amount[20]) {
 		msg.type = -1;
 		return msg;
 	}
+
+	/*
+
+
+	CHECK
+
+
+	*/ 
 	transfer.amount = strtol(amount, &endptr, 10);
 	if (*endptr != '\0') {
 		write(1, "Le montant n'est pas valide\n", strlen("La destination n'est pas un nombre valide\n"));
