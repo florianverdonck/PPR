@@ -6,6 +6,9 @@
 #include <inttypes.h>
 #include <ctype.h>
 
+#include <sys/socket.h>
+#include <netinet/in.h>
+
 #include "transfer.h"
 #include "message.h"
 

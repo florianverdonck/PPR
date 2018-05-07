@@ -48,7 +48,48 @@ TO-DO :
 */
 
 
-#include "client.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <inttypes.h>
+#include <ctype.h>
+
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+
+#include "transfer.h"
+#include "message.h"
+
+#define INIT_TRANSFERS_LIST_SIZE 2
+
+void prompt();
+
+void timer_child(int transfer_delay);
+
+void reccurent_transfers_child();
+
+int strip_line_break(char* command);
+
+int get_command_params(char *base, char target[10][20]);
+
+void print_usage();
+
+void send_tick_signal();
+
+Message create_message(char type[20], char destination[20], char amount[20]);
+
+int add_recurrent_transfer(Transfer* toAdd);
+
+void print_transfers_list();
+
+void process_transfers_list();
+
+int is_valid_number(char str[20]);
+
+
 
 // ouverture des deux pipes servant à communiquer
 int pipe_fd[2];
@@ -63,6 +104,11 @@ Transfer* transfers_list;
 int transfers_list_size = 0;
 int transfers_in_list = 0;
 
+// Variables related to socket connection
+int sck, port;
+struct sockaddr_in addr;
+struct hostent *host;
+
 int main(int argc, char* argv[]) {
 
 	if (argc != 5) {
@@ -70,11 +116,34 @@ int main(int argc, char* argv[]) {
 		print_usage();
 		exit(1);
 	}
-	
-	server_address = argv[1];
+
+	if( (sck = socket(AF_INET,SOCK_STREAM,0)) < 0 )
+    {   perror("server - socket");
+        exit(1);
+    }
+
+    host = gethostbyname(argv[1]);
 	server_port = atoi(argv[2]);
 	source_account = atoi(argv[3]);
 	transfer_delay = atoi(argv[4]);
+
+	if( host == NULL )
+	{	fprintf(stderr,"Unknown host\n");
+		exit(1);
+	}
+
+	bzero((char*)&addr,sizeof(struct sockaddr_in));
+    addr.sin_family      = AF_INET;
+	bcopy(host->h_addr,(char*)&addr.sin_addr.s_addr,host->h_length);
+    addr.sin_port        = htons(port);
+
+    if( connect(sck, (struct sockaddr *)&addr, sizeof(addr)) < 0 )
+    {   perror("client - connect");
+        exit(1);
+    }
+
+    if( isatty(0) )
+	    fprintf(stderr,"Connected\n> ");
 
 
 	if (pipe(pipe_fd) < 0) {
