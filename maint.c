@@ -56,9 +56,7 @@ int main(int argc, char* args[]) {
 	} else if(type == 2){
 		destroy();
 	} else {
-		printf("%d\n", atoi(args[2]));
 		down();
-		printf("%d\n", atoi(args[2]));
 		sleep(atoi(args[2]));
 		up();
 	}

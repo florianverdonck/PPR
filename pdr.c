@@ -27,17 +27,12 @@
 #include "resource.h"
 
 int main(int argc, char* args[]) {
-	/*if(argc != 3) {
+	if(argc < 2 || argc > 3) {
 		perror("pdr account amount");
 		exit(1);
-	}*/
-	if(argc == 1){
-		reader = (int *)shmat(shmid, NULL, SHM_R);
-    	SYS1(*reader);
-		int* ptr = reader;
-		for(ptr; ptr < reader+20; ptr++){
-			printf("%d\n", *ptr);
-		}
+	}
+	if(argc == 2){
+		displayAccountBook(atoi(args[1]));
 	}else{
 	depositOrWithdrawal(atoi(args[1]), atoi(args[2]));
 	}

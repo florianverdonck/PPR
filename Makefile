@@ -2,7 +2,7 @@
 # Makefile
 #######################################
 
-CFLAGS=-g
+CFLAGS=-g -Wall
 
 # Les programmes
 
@@ -17,7 +17,7 @@ pdr : pdr.o operation.o
 	gcc $(CFLAGS) -o pdr pdr.o operation.o resource.o
 
 server : server.o socket.o operation.o
-	gcc $(CLFLAGS) -o server server.o socket.o resource.o operation.o
+	gcc $(CFLAGS) -o server server.o socket.o resource.o operation.o
 
 client : client.o operation.o socket.o
 	gcc $(CFLAGS) -o client client.o operation.o resource.o

@@ -26,15 +26,14 @@ struct sembuf sem_up;
 int semid;
 int shmid;
 
-int* writer;
-int* reader;
+int* accountBook;
 
 void initSharedMemory();
 void initSemaphore();
 void destroy();
 void down();
 void up();
-int* getWriter();
-int* getReader();
+int* getAccountBook();
+void displayAccountBook(int size);
 
 #endif

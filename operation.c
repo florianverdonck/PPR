@@ -3,9 +3,9 @@
 
 void depositOrWithdrawal(int account, int amount){
     down();
-    writer = (int *)shmat(shmid, NULL, SHM_W);
-    SYS1(*writer);
-    int* ptr = writer+account;
+fprintf(stdout, "debut deposit\n");
+    int* ptr = getAccountBook()+account;
+	printf("%p\n", ptr);
     *ptr += (amount); 
     fprintf(stdout, "finish deposit\n");
     up();
