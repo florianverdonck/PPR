@@ -46,17 +46,6 @@ add "q" command to quit
 */
 
 
-/*
-
-CHANGES DONE :
-
-Vérification de la validité des données
-Process transfer list
-
-
-*/
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -156,7 +145,7 @@ int main(int argc, char* argv[]) {
 	setbuf(socket_fd,NULL);
 
     if( isatty(0) )
-	    fprintf(stderr,"Connected\n> ");
+	    fprintf(stderr,"Connected\n");
 
 	if (pipe(pipe_fd) < 0) {
 		printf("Erreur création pipe transfer\n");
@@ -210,6 +199,12 @@ void prompt() {
 		char params[3][20];
 
 		get_command_params(command, params);
+
+		if ((strcmp(params[0], "q") == 0)) {
+			write(STDOUT_FILENO, "Fin du programme\n", strlen("Fin du programme\n"));
+			exit(0);
+		}
+
 		Message msg = create_message(params[0], params[1], params[2]);
 
 		if (msg.type == -1) continue;
