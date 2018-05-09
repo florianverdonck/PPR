@@ -39,11 +39,20 @@
 
 /*
 
-
 TO-DO :
 
-- liste des virements (externalisée ? STRUCT SET avec méthode d'ajout ?)
-- auto-double size struct
+add "q" command to quit
+
+*/
+
+
+/*
+
+CHANGES DONE :
+
+Vérification de la validité des données
+Process transfer list
+
 
 */
 
@@ -256,23 +265,17 @@ Message create_message(char type[20], char destination[20], char amount[20]) {
 	Transfer transfer;
 	transfer.source = source_account;
 
-	char *endptr;
-	transfer.destination = strtol(destination, &endptr, 10);
-	if (*endptr != '\0') {
+	char *endptr1;
+	transfer.destination = strtol(destination, &endptr1, 10);
+	if (*endptr1 != '\0') {
 		write(1, "La destination n'est pas un nombre valide\n", strlen("La destination n'est pas un nombre valide\n"));
 		msg.type = -1;
 		return msg;
 	}
 
-	/*
-
-
-	CHECK
-
-
-	*/ 
-	transfer.amount = strtol(amount, &endptr, 10);
-	if (*endptr != '\0') {
+	char *endptr2;
+	transfer.amount = strtol(amount, &endptr2, 10);
+	if (*endptr2 != '\0') {
 		write(1, "Le montant n'est pas valide\n", strlen("La destination n'est pas un nombre valide\n"));
 		msg.type = -1;
 		return msg;
@@ -401,8 +404,10 @@ int add_recurrent_transfer(Transfer* toAdd) {
 }
 
 void process_transfers_list() {
-	write(1, "PROCESS FOLLOWING TRANSFERS\n", strlen("PROCESS FOLLOWING TRANSFERS\n"));
-	print_transfers_list();
+	for (Transfer *transfer = transfers_list; transfer - transfers_list < transfers_in_list; transfer++) {
+	    printf("Virement (%i -> %i : %i)\n", transfer->source, transfer->destination, transfer->amount);
+		fwrite(transfer, sizeof(*transfer), 1,socket_fd);
+	}
 }
 
 void print_transfers_list() {
