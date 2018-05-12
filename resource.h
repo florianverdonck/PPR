@@ -4,10 +4,10 @@
 #include <sys/ipc.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "config.h"
 #define ACCOUNT_NUM 1000
 #define SHM_KEY 1111
 #define SEM_KEY 2222
-#define SYS1(call) (call == -1 ? perror("SYSCALL ERROR"), exit(5) : 0)
 
 #if !defined (_RESOURCE_H_)
 #define _RESOURCE_H_
@@ -30,6 +30,8 @@ int* accountBook;
 
 void initSharedMemory();
 void initSemaphore();
+void retrieveSharedMemory();
+void retrieveSemaphore();
 void destroy();
 void down();
 void up();

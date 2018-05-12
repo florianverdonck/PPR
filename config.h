@@ -1,13 +1,7 @@
-/*
-
-TYPE :	0	-> Virement classique (Symbole +)
-		1	-> Virement récurrent (Symbole *)
-		2	-> Tick d'horloge (attribut transfer = NULL)
-
-*/
-
 #if !defined (_CONFIG_H_)
 #define _CONFIG_H_
+
+#define SYS(call,msg) (call == -1 ? perror("SYSCALL ERROR: " msg "\n"),exit(5) : 0)
 
 typedef struct Transfer Transfer;
 

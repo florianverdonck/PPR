@@ -3,10 +3,23 @@
 
 void depositOrWithdrawal(int account, int amount){
     down();
-fprintf(stdout, "debut deposit\n");
+    printf("%d -> %d\n", account, amount);
     int* ptr = getAccountBook()+account;
-	printf("%p\n", ptr);
     *ptr += (amount); 
-    fprintf(stdout, "finish deposit\n");
     up();
+}
+
+void depositOrWithdrawalWithoutSem(int account, int amount){
+    printf("%d -> %d\n", account, amount);
+    int* ptr = getAccountBook()+account;
+    *ptr += (amount);
+}
+
+void displayAccountBook(int size)
+{
+    retrieveSharedMemory();
+    for (int *ptr = accountBook; ptr < accountBook + size; ptr++)
+    {
+        printf("%ld : %d\n", ptr - accountBook, *ptr);
+    }
 }
