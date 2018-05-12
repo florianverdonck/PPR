@@ -81,13 +81,11 @@ int main(int argc, char* argv[]) {
 			prompt(pid_timer_child);
 		} else {
 			// Child 2
-			printf("Timer %d\n", getpid());
 			timer_child(transfer_delay);
 		}
 
 	} else {
 		// Reccurent transfers child
-		printf("Recurrent %d\n", getpid());
 		reccurent_transfers_child();
 	}
 
